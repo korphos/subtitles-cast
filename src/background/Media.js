@@ -8,7 +8,7 @@ export default class Media {
         this.filePath = inputFile.path;
         this.name = inputFile.name;
         this.duration = inputFile.duration;
-        this.subtitles = {};
+        this.subtitles = [];
         this.audioTracks = [];
         this.url = `http://${LocalIPHelper.getLocalIP()}:3000/video/${this.id}`;
     }

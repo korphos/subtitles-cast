@@ -27,11 +27,14 @@ function createWindow() {
     win = new BrowserWindow({
         width: 1200,
         height: 800,
+        menu: false,
         webPreferences: {
             nodeIntegration: true,
             webSecurity: false
         }
     })
+
+    win.setMenu(null);
 
     if (process.env.WEBPACK_DEV_SERVER_URL) {
         // Load the url of the dev server if in development mode

@@ -1,12 +1,17 @@
 import express from "express";
+import cors from "cors";
 import fs from "fs";
+import bodyParser from "body-parser";
 
 export default class LocalHTTPServer {
-    start(playlist) {
+    start(app) {
         const router = express();
 
+        router.use(cors());
+        router.use(bodyParser());
+
         router.get(`/video/:id`, (req, res) => {
-            const media = playlist.getMedia(req.params.id);
+            const media = app.playlist.getMedia(req.params.id);
             if (!media) {
                 res.sendStatus(404);
                 return;
@@ -46,7 +51,7 @@ export default class LocalHTTPServer {
         });
 
         router.get('/subtitles/:id/:language.vtt', function(req, res) {
-            const media = playlist.getMedia(req.params.id);
+            const media = app.playlist.getMedia(req.params.id);
             if (!media) {
                 res.sendStatus(404);
                 return;
@@ -57,6 +62,32 @@ export default class LocalHTTPServer {
                 .set({
                     'Access-Control-Allow-Origin': '*'
                 }).send(vtt);
+        });
+
+        router.post('/remote', function(req, res) {
+            console.log(req.body);
+            switch (req.body.command) {
+                case `play`:
+                    app.player.play();
+                    break;
+                case `pause`:
+                    app.player.pause();
+                    break;
+                case `next`:
+                    app.player.next();
+                    break;
+                case `previous`:
+                    app.player.previous();
+                    break;
+                case `forward`:
+                    app.player.seek(req.body.args);
+                    break;
+                case `backward`:
+                    app.player.seek(-req.body.args);
+                    break;
+            }
+
+            res.sendStatus(200);
         });
 
         router.listen(3000, () => {

@@ -8,28 +8,35 @@ export default class Subtitleshelper {
         return new Promise((resolve, reject) => {
             const parser = new MatroskaSubtitles();
 
+            media.subtitlesObject = {};
+
             // first an array of subtitle track information is emitted
             parser.once(`tracks`, (tracks) => {
                 for (const track of tracks) {
                     const languageInfo = this.getLanguageInfo(track.language);
-                    media.subtitles[track.number] = {
+                    media.subtitlesObject[track.number] = {
                         language: languageInfo.code,
                         name: languageInfo.name,
                         url: `http://${LocalIPHelper.getLocalIP()}:3000/subtitles/${media.id}/${languageInfo.code}.vtt`,
                         texts: []
                     };
                 }
-
-                resolve();
             });
 
             // afterwards each subtitle is emitted
             parser.on(`subtitle`, (subtitle, trackNumber) => {
-                media.subtitles[trackNumber].texts.push({
+                media.subtitlesObject[trackNumber].texts.push({
                     time: subtitle.time,
                     duration: subtitle.duration,
                     text: subtitle.text
                 });
+            });
+
+            // afterwards each subtitle is emitted
+            parser.on(`finish`, (subtitle, trackNumber) => {
+                console.log(`${media.name} subtitles extracted.`);
+                media.subtitles = Object.values(media.subtitlesObject);
+                resolve();
             });
 
             fs.createReadStream(media.filePath).pipe(parser);
@@ -44,8 +51,8 @@ export default class Subtitleshelper {
                 for (let subtitle of subtitles.texts) {
                     const timerStart = this.convertMSDurationToVTTFormat(moment.duration(subtitle.time + timeOffset, `milliseconds`));
                     const timerStop = this.convertMSDurationToVTTFormat(moment.duration(subtitle.time + subtitle.duration + timeOffset, `milliseconds`));
-                    vtt  += `\n\n${timerStart} --> ${timerStop} line:90%`;
-                    vtt  += `\n${subtitle.text}`;
+                    vtt += `\n\n${timerStart} --> ${timerStop} line:90%`;
+                    vtt += `\n${subtitle.text}`;
                 }
                 break;
             }

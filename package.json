@@ -15,8 +15,10 @@
     "main": "background.js",
     "dependencies": {
         "axios": "^0.19.2",
+        "body-parser": "^1.19.0",
         "chromecast-api": "^0.3.3",
         "core-js": "^3.6.5",
+        "cors": "^2.8.5",
         "express": "^4.17.1",
         "matroska-subtitles": "^2.0.3",
         "moment": "^2.27.0",

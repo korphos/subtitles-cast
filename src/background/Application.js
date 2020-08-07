@@ -16,14 +16,13 @@ export default class Application {
         this.playlist = new Playlist();
 
         this.httpServer = new LocalHTTPServer();
-        this.httpServer.start(this.playlist);
+        this.httpServer.start(this, this.playlist);
 
         this.chromecastHelper = new ChromecastHelper();
         this.chromecastHelper.scanDevices(() => {
             if (this.browserWindow && this.browserWindow.webContents) {
                 this.browserWindow.webContents.send('chromecast-devices', this.chromecastHelper.devices);
             }
-            console.log(this.chromecastHelper.devices);
         });
 
         this.player = new LocalPlayer(this.playlist);
@@ -50,9 +49,9 @@ export default class Application {
                 const media = new Media(file);
                 await media.extractData();
                 this.playlist.add(media);
-            }
 
-            this.browserWindow.webContents.send(`playlist-updated`, JSON.parse(JSON.stringify(this.playlist)));
+                this.browserWindow.webContents.send(`playlist-updated`, JSON.parse(JSON.stringify(this.playlist)));
+            }
         });
 
         ipcMain.on(`select-player`, async(event, playerId) => {
