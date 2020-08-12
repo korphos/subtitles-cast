@@ -9,9 +9,7 @@ export default class ChromecastHelper {
     scanDevices(callback) {
         this.client = new ChromecastAPI();
 
-        console.log(this.client.devices);
         this.client.on(`device`, device => {
-            console.log(device);
             device.id = uuid();
             this.devices.push(device);
             if (callback) {

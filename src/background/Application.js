@@ -25,14 +25,18 @@ export default class Application {
             }
         });
 
-        this.player = new LocalPlayer(this.playlist);
+        this.player = new ChromecastPlayer(this.playlist);
 
         this.registerListeners();
     }
 
     onUIStarted() {
-        console.log(this.chromecastHelper.client.devices);
-        this.browserWindow.webContents.send('chromecast-devices', this.chromecastHelper.devices);
+        this.browserWindow.webContents.send('chromecast-devices', this.chromecastHelper.devices.map(d => {
+            return {
+                id: d.id,
+                friendlyName: d.friendlyName
+            }
+        }));
     }
 
     registerListeners() {
@@ -58,7 +62,6 @@ export default class Application {
             if (playerId === 0) {
                 this.player = new LocalPlayer(this.playlist);
             } else {
-                this.player = new ChromecastPlayer(this.playlist);
                 this.player.setCurrentDevice(this.chromecastHelper.getDevice(playerId))
             }
 

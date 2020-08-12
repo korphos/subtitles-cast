@@ -14,8 +14,7 @@ module.exports = {
                     "oneClick": true,
                     "perMachine": true,
                     "allowElevation": true,
-                    "createDesktopShortcut": true,
-                    "installerIcon": "./public/logo.png"
+                    "createDesktopShortcut": true
                 }
             }
         }

@@ -79,15 +79,12 @@ export default class LocalHTTPServer {
                 case `previous`:
                     app.player.previous();
                     break;
-                case `forward`:
-                    app.player.seek(req.body.args);
-                    break;
-                case `backward`:
-                    app.player.seek(-req.body.args);
+                case `seek`:
+                    app.player.seek(+req.body.args);
                     break;
             }
 
-            res.sendStatus(200);
+            res.json({status: `ok`});
         });
 
         router.listen(3000, () => {

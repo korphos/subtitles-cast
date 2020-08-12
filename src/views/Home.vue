@@ -5,7 +5,7 @@
                 <v-col>
                     <v-card>
                         <v-card-title>Chromecast players</v-card-title>
-                        <v-virtual-scroll :items="chromecastDevices" :item-height="50" height="200">
+                        <v-virtual-scroll :items="chromecastDevices" :item-height="50" height="500">
                             <template v-slot="{item}">
                                 <v-list-item :class="{active: selectedDevice && selectedDevice.friendlyName === item.friendlyName}" @click="selectDevice(item)">
                                     <v-list-item-content>
@@ -25,7 +25,7 @@
 
                         <input ref="files" type="file" style="display: none" accept="video/*,.mkv" multiple @change="addFiles">
 
-                        <v-virtual-scroll v-if="playlist" :items="playlist.medias" :item-height="50" height="200">
+                        <v-virtual-scroll v-if="playlist" :items="playlist.medias" :item-height="50" height="500">
                             <template v-slot="{item}">
                                 <v-list-item class="video-item" :class="{active: selectedMedia && selectedMedia.id === item.id}" @click="selectMedia(item)">
                                     <!--                                    <v-list-item-avatar>-->
@@ -35,7 +35,7 @@
                                     <!--                                    </v-list-item-avatar>-->
 
                                     <v-list-item-content>
-                                        <v-list-item-title>{{ item.name }}</v-list-item-title>
+                                        <v-list-item-title :title="item.name">{{ item.name }}</v-list-item-title>
                                     </v-list-item-content>
 
                                     <v-list-item-action>
@@ -49,7 +49,7 @@
                 <v-col>
                     <v-card>
                         <v-card-title>Subtitles</v-card-title>
-                        <v-virtual-scroll v-if="selectedMedia" :items="selectedMedia.subtitles" :item-height="50" height="200">
+                        <v-virtual-scroll v-if="selectedMedia" :items="selectedMedia.subtitles" :item-height="50" height="500">
                             <template v-slot="{item}">
                                 <v-list-item :class="{active: selectedSubtitles && selectedSubtitles.language === item.language}" @click="selectSubtitles(item)">
                                     <!--                                    <v-list-item-avatar>-->
@@ -203,10 +203,10 @@ export default {
                     const video = document.createElement(`video`);
                     video.preload = `metadata`;
 
+                    files.push(file);
                     video.onloadedmetadata = () => {
                         URL.revokeObjectURL(video.src);
                         file.duration = video.duration;
-                        files.push(file);
                         i++;
                         if (i >= event.target.files.length) {
                             resolve();

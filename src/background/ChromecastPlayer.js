@@ -44,6 +44,10 @@ export default class ChromecastPlayer {
     connect(startTime = null) {
         const media = this.playlist.getCurrentMedia();
 
+        if (!media) {
+            return;
+        }
+
         const mediaParams = {
             url: media.url,
             subtitles: Object.values(media.subtitles).map(s => {
